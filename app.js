@@ -10,7 +10,7 @@ app.set('view engine', 'handlebars')
 
 // routes setting
 app.get('/', (req, res) => {
-  res.send('This is my restaurant list built with express')
+  res.render('index')
 })
 
 // start and listen on the Express server
