@@ -1,6 +1,7 @@
 // require packages used in the project
 const express = require('express')
 const exphbs = require('express-handlebars')
+const restaurantList = require('./restaurant.json')
 const app = express()
 const port = 3000
 
@@ -13,7 +14,8 @@ app.use(express.static('public'))
 
 // routes setting
 app.get('/', (req, res) => {
-  res.render('index')
+  // pass the restaurant data into 'index' partial template
+  res.render('index', { restaurants: restaurantList.results })
 })
 
 // start and listen on the Express server
