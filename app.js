@@ -1,7 +1,14 @@
 // require packages used in the project
 const express = require('express')
 const exphbs = require('express-handlebars')
+const mongoose = require('mongoose')
 const restaurantList = require('./restaurant.json')
+
+// only use dotenv in non-production environments
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const app = express()
 const port = 3000
 
@@ -11,6 +18,20 @@ app.set('view engine', 'handlebars')
 
 // setting static files
 app.use(express.static('public'))
+
+// setting connection to mongoDB
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+
+// Get the database connection status
+const db = mongoose.connection
+// Connection error
+db.on('error', () => {
+  console.log('mongodb error!')
+})
+// Connection established
+db.once('open', () => {
+  console.log('mongodb connected!')
+})
 
 // routes setting
 app.get('/', (req, res) => {
