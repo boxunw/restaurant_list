@@ -2,7 +2,7 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
-const restaurantList = require('./restaurant.json')
+const Restaurant = require('./models/restaurant')
 
 // only use dotenv in non-production environments
 if (process.env.NODE_ENV !== 'production') {
@@ -35,8 +35,10 @@ db.once('open', () => {
 
 // routes setting
 app.get('/', (req, res) => {
-  // pass the restaurant data into 'index' partial template
-  res.render('index', { restaurants: restaurantList.results })
+  Restaurant.find()
+    .lean()
+    .then(restaurants => res.render('index', { restaurants }))
+    .catch(error => console.error(error))
 })
 
 app.get('/restaurants/:restaurant_id', (req, res) => {
