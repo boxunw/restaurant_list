@@ -16,6 +16,15 @@
   </div>
 </div>
 
+<!-- search error message -->
+{{#if error}}
+<div class="container d-flex align-items-center justify-content-center mt-3">
+  <span class="alert alert-danger px-5" role="alert">
+    {{error}}
+  </span>
+</div>
+{{/if}}
+
 <!-- restaurant list -->
 <div class="container mt-5">
   <div class="row">

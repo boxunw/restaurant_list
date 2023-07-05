@@ -22,15 +22,19 @@ app.get('/restaurants/:restaurant_id', (req, res) => {
   const restaurant = restaurantList.results.find(
     restaurant => restaurant.id.toString() === req.params.restaurant_id
   )
-  res.render('show', { restaurant: restaurant })
+  res.render('show', { restaurant })
 })
 
 app.get('/search', (req, res) => {
   const keyword = req.query.keyword
   const restaurants = restaurantList.results.filter(restaurant => {
-    return restaurant.name.toLowerCase().includes(keyword.toLowerCase()) || restaurant.category.includes(keyword)
+    return restaurant.name.toLowerCase().includes(keyword.trim().toLowerCase()) || restaurant.category.includes(keyword.trim())
   })
-  res.render('index', { restaurants: restaurants, keyword: keyword })
+  if (restaurants.length === 0) {
+    res.render('index', { error: `您輸入的關鍵字：${keyword} 沒有符合條件的餐廳`, keyword })
+    return
+  }
+  res.render('index', { restaurants, keyword })
 })
 
 // start and listen on the Express server
