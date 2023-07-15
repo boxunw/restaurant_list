@@ -4,14 +4,11 @@ const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-
-const Restaurant = require('./models/restaurant')
-
 // only use dotenv in non-production environments
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-
+const routes = require('./routes')
 const app = express()
 const port = 3000
 
@@ -42,72 +39,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // each request will undergo pre - processing through methodOverride
 app.use(methodOverride('_method'))
 
-// routes setting
-app.get('/', (req, res) => {
-  Restaurant.find()
-    .lean()
-    .sort({ _id: 'asc' })
-    .then(restaurants => res.render('index', { restaurants }))
-    .catch(error => console.error(error))
-})
-
-app.get('/restaurants/new', (req, res) => {
-  return res.render('new')
-})
-
-app.post('/restaurants', (req, res) => {
-  return Restaurant.create(req.body)
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
-
-app.get('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findById(id)
-    .lean()
-    .then((restaurant) => res.render('detail', { restaurant }))
-    .catch(error => console.log(error))
-})
-
-app.get('/restaurants/:id/edit', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findById(id)
-    .lean()
-    .then((restaurant) => res.render('edit', { restaurant }))
-    .catch(error => console.log(error))
-})
-
-app.put('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findByIdAndUpdate(id, req.body)
-    .then(() => res.redirect(`/restaurants/${id}`))
-    .catch(error => console.log(error))
-})
-
-app.delete('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findById(id)
-    .then(restaurant => restaurant.remove())
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
-
-app.get('/search', (req, res) => {
-  const keyword = req.query.keyword
-  return Restaurant.find({})
-    .lean()
-    .then(restaurantList => {
-      const restaurants = restaurantList.filter(restaurant => {
-        return restaurant.name.toLowerCase().includes(keyword.trim().toLowerCase()) || restaurant.category.includes(keyword.trim())
-      })
-      if (restaurants.length === 0) {
-        res.render('index', { error: `您輸入的關鍵字：${keyword} 沒有符合條件的餐廳`, keyword })
-        return
-      }
-      res.render('index', { restaurants, keyword })
-    })
-    .catch(error => console.log(error))
-})
+// route the request to the router
+app.use(routes)
 
 // start and listen on the Express server
 app.listen(port, () => {
