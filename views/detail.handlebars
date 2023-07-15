@@ -5,7 +5,7 @@
       <div class="d-flex justify-content-start flex-wrap mb-2">
         <a href="/restaurants/{{restaurant._id}}/edit"><button class="btn btn-secondary btn-sm">編輯</button></a>
         <div class="mx-1"></div>
-        <form action="/restaurants/{{restaurant._id}}/delete" method="POST">
+        <form action="/restaurants/{{restaurant._id}}?_method=DELETE" method="POST">
           <button type="submit" class="btn btn-danger btn-sm text-white">刪除</button>
         </form>
       </div>

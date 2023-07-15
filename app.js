@@ -1,6 +1,7 @@
 // require packages used in the project
 const express = require('express')
 const exphbs = require('express-handlebars')
+const methodOverride = require('method-override')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
@@ -24,19 +25,22 @@ app.use(express.static('public'))
 // setting connection to mongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
 
-// Get the database connection status
+// get the database connection status
 const db = mongoose.connection
-// Connection error
+// connection error
 db.on('error', () => {
   console.log('mongodb error!')
 })
-// Connection established
+// connection established
 db.once('open', () => {
   console.log('mongodb connected!')
 })
 
-// Each request needs to be pre-processed using body-parser
+// each request needs to be pre-processed using body-parser
 app.use(bodyParser.urlencoded({ extended: true }))
+
+// each request will undergo pre - processing through methodOverride
+app.use(methodOverride('_method'))
 
 // routes setting
 app.get('/', (req, res) => {
@@ -73,14 +77,14 @@ app.get('/restaurants/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-app.post('/restaurants/:id/edit', (req, res) => {
+app.put('/restaurants/:id', (req, res) => {
   const id = req.params.id
   return Restaurant.findByIdAndUpdate(id, req.body)
     .then(() => res.redirect(`/restaurants/${id}`))
     .catch(error => console.log(error))
 })
 
-app.post('/restaurants/:id/delete', (req, res) => {
+app.delete('/restaurants/:id', (req, res) => {
   const id = req.params.id
   return Restaurant.findById(id)
     .then(restaurant => restaurant.remove())
