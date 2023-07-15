@@ -9,25 +9,32 @@ const restaurantSchema = new Schema({
     type: String
   },
   category: {
-    type: String
+    type: String,
+    required: true
   },
   image: {
-    type: String
+    type: String,
+    required: true
   },
   location: {
-    type: String
+    type: String,
+    required: true
   },
   phone: {
-    type: String
+    type: String,
+    required: true
   },
   google_map: {
-    type: String
+    type: String,
+    required: true
   },
   rating: {
-    type: Number
+    type: Number,
+    required: true
   },
   description: {
-    type: String
+    type: String,
+    required: true
   }
 })
 module.exports = mongoose.model('Restaurant', restaurantSchema)

@@ -2,6 +2,8 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+
 const Restaurant = require('./models/restaurant')
 
 // only use dotenv in non-production environments
@@ -33,12 +35,26 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+// Each request needs to be pre-processed using body-parser
+app.use(bodyParser.urlencoded({ extended: true }))
+
 // routes setting
 app.get('/', (req, res) => {
   Restaurant.find()
     .lean()
     .then(restaurants => res.render('index', { restaurants }))
     .catch(error => console.error(error))
+})
+
+app.get('/restaurants/new', (req, res) => {
+  return res.render('new')
+})
+
+app.post('/restaurants', (req, res) => {
+  const { name, name_en, category, image, location, phone, google_map, rating, description } = req.body
+  return Restaurant.create({ name, name_en, category, image, location, phone, google_map, rating, description })
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
 })
 
 app.get('/restaurants/:restaurant_id', (req, res) => {
