@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
 const Restaurant = require('./models/restaurant')
-const restaurant = require('./models/restaurant')
 
 // only use dotenv in non-production environments
 if (process.env.NODE_ENV !== 'production') {
@@ -23,7 +22,7 @@ app.set('view engine', 'handlebars')
 app.use(express.static('public'))
 
 // setting connection to mongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
 
 // Get the database connection status
 const db = mongoose.connection
@@ -43,6 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.get('/', (req, res) => {
   Restaurant.find()
     .lean()
+    .sort({ _id: 'asc' })
     .then(restaurants => res.render('index', { restaurants }))
     .catch(error => console.error(error))
 })
