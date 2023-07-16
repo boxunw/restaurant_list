@@ -10,6 +10,27 @@ router.get('/new', (req, res) => {
 router.post('/', (req, res) => {
   const userId = req.user._id
   req.body.userId = userId
+  // 處理新增餐廳流程中的錯誤訊息
+  const { name, name_en, category, image, location, phone, google_map, rating, description } = req.body
+  const new_error = {}
+  if (!name || !category || !image || !location || !phone || !google_map || !rating || !description) {
+    new_error.message = '請完成所有必填欄位！'
+  }
+  if (Object.keys(new_error).length) {
+    return res.render('new', {
+      new_error,
+      name,
+      name_en,
+      category,
+      image,
+      location,
+      phone,
+      google_map,
+      rating,
+      description
+    })
+  }
+  // 新增餐廳到資料庫
   return Restaurant.create(req.body)
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
