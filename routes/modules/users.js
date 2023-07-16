@@ -1,17 +1,25 @@
 const express = require('express')
 const router = express.Router()
+const passport = require('passport')
 const User = require('../../models/user')
 
+// 使用者登入路由
 router.get('/login', (req, res) => {
   res.render('login')
 })
-router.post('/login', (req, res) => {
-})
+
+// 驗證 request 登入狀態
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/users/login'
+}))
+
+// 使用者註冊路由
 router.get('/register', (req, res) => {
   res.render('register')
 })
 
-// register user
+// 註冊使用者資訊
 router.post('/register', (req, res) => {
   const { name, email, password, confirmPassword } = req.body
   User.findOne({ email }).then(user => {

@@ -1,42 +1,45 @@
-// require packages used in the project
 const express = require('express')
 const session = require('express-session')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
-// only use dotenv in non-production environments
+// 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 const routes = require('./routes')
+const usePassport = require('./config/passport')
 require('./config/mongoose')
 const app = express()
 const port = 3000
 
-// setting template engine
+// 啟用樣板引擎
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 
-// use express-session
+// 啟用並設定 express-session
 app.use(session({
   secret: 'ThisIsNotASecret',
   resave: false,
   saveUninitialized: true
 }))
 
-// setting static files
+// 使用靜態檔案
 app.use(express.static('public'))
 
-// each request needs to be pre-processed using body-parser
+// 每一筆請求都需要透過 body-parser 進行前置處理
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// each request will undergo pre-processing through methodOverride
+// 每一筆請求都會透過 methodOverride 進行前置處理
 app.use(methodOverride('_method'))
 
-// route the request to the router
+// 呼叫 Passport 函式並傳入 app
+usePassport(app)
+
+// 將 request 導入路由器
 app.use(routes)
 
-// start and listen on the Express server
+// 啟動並監聽伺服器
 app.listen(port, () => {
   console.log(`Express is listening on localhost:${port}`)
 })

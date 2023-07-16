@@ -1,6 +1,6 @@
 const Restaurant = require('../restaurant')
 const restaurantList = require('../../restaurant.json')
-// only use dotenv in non-production environments
+// 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }

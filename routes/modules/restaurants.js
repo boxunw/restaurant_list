@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Restaurant = require('../../models/restaurant')
 
-// routes setting
+// 設定路由
 router.get('/new', (req, res) => {
   return res.render('new')
 })

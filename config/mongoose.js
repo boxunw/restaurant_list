@@ -1,15 +1,15 @@
 const mongoose = require('mongoose')
 
-// setting connection to mongoDB
+// 設定連線到 mongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
 
-// get the database connection status
+// 取得資料庫連線狀態
 const db = mongoose.connection
-// connection error
+// 連線異常
 db.on('error', () => {
   console.log('mongodb error!')
 })
-// connection established
+// 連線成功
 db.once('open', () => {
   console.log('mongodb connected!')
 })
