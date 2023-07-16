@@ -37,8 +37,8 @@ db.once('open', () => {
           { length: 3 },
           (_, i) => {
             const j = Number(user.name)
-            restaurantList[(j + i)].userId = user._id
-            return Restaurant.create(restaurantList[(j + i)])
+            restaurantList[j + i].userId = user._id
+            return Restaurant.create(restaurantList[j + i])
           }
         ))
       })
